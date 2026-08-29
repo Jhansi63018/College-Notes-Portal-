@@ -6,9 +6,7 @@ Technology:
 - CSS3
 - PHP 8+
 - MySQL
-- PDO
-- No JavaScript
-- No Bootstrap
+
 
 INSTALLATION ON XAMPP
 ---------------------
