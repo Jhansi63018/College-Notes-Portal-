@@ -1,0 +1,7 @@
+<?php require_once '../config/db.php'; require_once '../includes/auth.php'; require_role('student');
+$uid=(int)($_GET['id']??0);$st=$pdo->prepare("SELECT u.*,s.name subject_name FROM units u JOIN subjects s ON s.id=u.subject_id WHERE u.id=?");$st->execute([$uid]);$unit=$st->fetch();if(!$unit)die("Unit not found.");
+$st=$pdo->prepare("SELECT m.*,u.unit_name FROM materials m LEFT JOIN units u ON u.id=m.unit_id WHERE m.unit_id=? AND m.status='approved' ORDER BY m.material_type,m.id DESC");$st->execute([$uid]);$rows=$st->fetchAll();
+$page_title=$unit['unit_name'];$css_path='../assets/css/style.css';$home_path='dashboard.php';$logout_path='../logout.php';$role='student';include '../includes/header.php';?><div class="layout"><?php include '../includes/sidebar.php';?>
+<h1 class="page-title"><?=e($unit['subject_name'])?> - Unit <?=e($unit['unit_no'])?></h1><p class="breadcrumb">Home → <?=e($unit['subject_name'])?> → Unit <?=e($unit['unit_no'])?></p>
+<div class="table-card"><table><thead><tr><th>Title</th><th>Type</th><th>Description</th><th>Download</th></tr></thead><tbody><?php foreach($rows as $r):?><tr><td><?=e($r['title'])?></td><td><span class="tag"><?=e(ucwords(str_replace('_',' ',$r['material_type'])))?></span></td><td><?=e($r['description'])?></td><td><a class="action-btn download-btn" href="../download.php?id=<?=$r['id']?>">⇩ Download</a></td></tr><?php endforeach;if(!$rows):?><tr><td colspan="4" class="empty">No approved materials for this unit.</td></tr><?php endif;?></tbody></table></div>
+</main></div><?php include '../includes/footer.php';?>
